@@ -1,4 +1,4 @@
 Saturn
 Fable.Remoting.Giraffe
-SQLProvider
+Dapper.FSharp
 System.Data.SqlClient

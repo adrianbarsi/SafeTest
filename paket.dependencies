@@ -17,7 +17,7 @@ nuget Fable.React
 nuget Fable.Remoting.Client
 nuget Fulma
 
-nuget SQLProvider
+nuget Dapper.FSharp
 nuget System.Data.SqlClient
 
 group Build

@@ -7,36 +7,39 @@ open Fable.React
 open Fable.React.Props
 open Fulma
 
-type Model =
-    { person : Person }
-
-type Msg =
-    | GetPerson
-    | SetPerson of Person
+open System.Collections.Generic
 
 let api =
     Remoting.createApi()
     |> Remoting.withRouteBuilder Route.builder 
     |> Remoting.buildProxy<IApi>
 
-let personToString (person : Person) =
-    sprintf "Name: %s, Age: %i, Gender: %A" person.name person.age person.gender
+type Model = {
+    countries : IEnumerable<Country>
+}
+
+type Msg =
+    | GetCountries
+    | SetCountries of IEnumerable<Country>
+
+let countriesToString (countries : IEnumerable<Country>) = sprintf "%A" countries
 
 let init(): Model * Cmd<Msg> =
-    let model =
-        { person = { name = ""; age = 0; gender = Male }
-        }
+    let model = {
+        countries = []
+    }
     model, Cmd.none
 
 let update (msg: Msg) (model: Model): Model * Cmd<Msg> =
     match msg with
-    | GetPerson ->
-        model, Cmd.OfAsync.perform api.getPerson () SetPerson
-    | SetPerson person ->
-        { model with person = person }, Cmd.none
+    | GetCountries ->
+        model, Cmd.OfAsync.perform api.getCountries () SetCountries
+
+    | SetCountries countries ->
+        { model with countries = countries }, Cmd.none
 
 let view (model : Model) (dispatch : Msg -> unit) =
     div [] [
-        button [ OnClick (fun _ -> dispatch GetPerson)] [ str "Get Person"]
-        span [] [ str (personToString model.person)]
+        button [ OnClick (fun _ -> dispatch GetCountries) ] [ str "Get Countries" ]
+        span [] [ str (countriesToString model.countries) ]
     ]

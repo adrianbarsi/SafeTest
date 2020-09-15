@@ -5,21 +5,28 @@ open Fable.Remoting.Giraffe
 open Saturn
 open Shared
 
-open FSharp.Data.Sql
+open Dapper.FSharp
+open Dapper.FSharp.MSSQL
 
-type Sql = SqlDataProvider<Common.DatabaseProviderTypes.MSSQLSERVER, "Server=.\\SQLEXPRESS;Database=Clubs;Trusted_Connection=True;">
+open System.Data
+open System.Data.SqlClient 
 
-let context = Sql.GetDataContext();
+Dapper.FSharp.OptionTypes.register()
 
-let person : Person = { name = "X"; age = 21; gender = Male }
+let connectionString = "Server=.\\SQLEXPRESS;Database=Clubs;Trusted_Connection=True;"
+let sqlConnection = new SqlConnection()
+sqlConnection.ConnectionString <- connectionString
+sqlConnection.Open()
 
-let getPerson () =
-    async {
-        return person
-    }
+let dbConnection = sqlConnection :> IDbConnection
+
+let getCountries () =
+    select {
+        table "country"
+    } |> dbConnection.SelectAsync<Country> |> Async.AwaitTask 
 
 let api : IApi = {
-    getPerson = getPerson
+    getCountries = getCountries
 }
 
 let webApp =

@@ -1,6 +1,6 @@
 namespace Shared
 
-open System
+open System.Collections.Generic
 
 type Gender = Male | Female
 
@@ -10,10 +10,19 @@ type Person = {
     gender : Gender
 }
 
+type Country = {
+    countryCode : string
+    name : string
+    postalPattern : string
+    phonePattern : string
+    federalSalesTax : double
+    provinceTerminology : string
+}
+
 module Route =
     let builder typeName methodName =
         sprintf "/api/%s/%s" typeName methodName
 
 type IApi = { 
-    getPerson : unit -> Async<Person>
+    getCountries : unit -> Async<IEnumerable<Country>>
 }

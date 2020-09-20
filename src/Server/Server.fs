@@ -8,22 +8,18 @@ open Shared
 open Dapper.FSharp
 open Dapper.FSharp.MSSQL
 
-open System.Data
 open System.Data.SqlClient 
 
-Dapper.FSharp.OptionTypes.register()
+OptionTypes.register()
 
-let connectionString = "Server=.\\SQLEXPRESS;Database=Clubs;Trusted_Connection=True;"
-let sqlConnection = new SqlConnection()
-sqlConnection.ConnectionString <- connectionString
+let connectionString = "Server=.\\SQLEXPRESS;Database=Clubs2;Trusted_Connection=True;"
+let sqlConnection = new SqlConnection(connectionString)
 sqlConnection.Open()
-
-let dbConnection = sqlConnection :> IDbConnection
 
 let getCountries () =
     select {
         table "country"
-    } |> dbConnection.SelectAsync<Country> |> Async.AwaitTask 
+    } |> sqlConnection.SelectAsync<Country> |> Async.AwaitTask 
 
 let api : IApi = {
     getCountries = getCountries
